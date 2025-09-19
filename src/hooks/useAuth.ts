@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
-import { useLoginMutation, useLogoutMutation } from '@/store/api/restaurantApi';
+import { useLoginMutation, useSignupMutation, useLogoutMutation } from '@/store/api/restaurantApi';
 import { 
   setCredentials, 
   setLoading, 
@@ -11,7 +11,7 @@ import {
   selectIsAuthenticated,
   selectAuthLoading
 } from '@/store/slices/authSlice';
-import type { LoginRequest } from '@/store/api/restaurantApi';
+import type { LoginRequest, SignupRequest } from '@/store/api/restaurantApi';
 
 export const useAuth = () => {
   const dispatch = useDispatch();
@@ -22,6 +22,7 @@ export const useAuth = () => {
   const isLoading = useSelector(selectAuthLoading);
   
   const [loginMutation] = useLoginMutation();
+  const [signupMutation] = useSignupMutation();
   const [logoutMutation] = useLogoutMutation();
 
   const login = useCallback(async (credentials: LoginRequest) => {
@@ -53,6 +54,36 @@ export const useAuth = () => {
       dispatch(setLoading(false));
     }
   }, [dispatch, loginMutation, navigate]);
+
+  const signup = useCallback(async (userData: SignupRequest) => {
+    try {
+      dispatch(setLoading(true));
+      const result = await signupMutation(userData).unwrap();
+      
+      dispatch(setCredentials({
+        user: result.user,
+        token: result.token
+      }));
+      
+      toast({
+        title: "Account Created",
+        description: `Welcome to Romdol, ${result.user.name}!`,
+      });
+      
+      navigate('/dashboard');
+      return result;
+    } catch (error: any) {
+      const message = error?.data?.message || 'Signup failed. Please try again.';
+      toast({
+        title: "Signup Failed",
+        description: message,
+        variant: "destructive",
+      });
+      throw error;
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }, [dispatch, signupMutation, navigate]);
 
   const logout = useCallback(async () => {
     try {
@@ -110,6 +141,7 @@ export const useAuth = () => {
     isAuthenticated,
     isLoading,
     login,
+    signup,
     logout,
     checkAuth,
   };

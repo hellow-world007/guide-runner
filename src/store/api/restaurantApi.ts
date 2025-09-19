@@ -18,6 +18,12 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface SignupRequest {
+  username: string;
+  email: string;
+  password: string;
+}
+
 export interface LoginResponse {
   user: User;
   token: string;
@@ -145,6 +151,15 @@ export const restaurantApi = createApi({
       invalidatesTags: ['User'],
     }),
     
+    signup: builder.mutation<LoginResponse, SignupRequest>({
+      query: (userData) => ({
+        url: '/auth/signup',
+        method: 'POST',
+        body: userData,
+      }),
+      invalidatesTags: ['User'],
+    }),
+    
     logout: builder.mutation<{ message: string }, void>({
       query: () => ({
         url: '/auth/logout',
@@ -260,6 +275,7 @@ export const restaurantApi = createApi({
 // Export hooks for usage in functional components
 export const {
   useLoginMutation,
+  useSignupMutation,
   useLogoutMutation,
   useGetDashboardStatsQuery,
   useGetOrdersQuery,

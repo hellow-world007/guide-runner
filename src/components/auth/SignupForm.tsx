@@ -8,16 +8,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useAuth } from '@/hooks/useAuth';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
-export const LoginForm = () => {
-  const [email, setEmail] = useState('admin@romdol.com');
-  const [password, setPassword] = useState('admin123');
+export const SignupForm = () => {
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const { login, isLoading } = useAuth();
+  const { signup, isLoading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await login({ email, password });
+      await signup({ username, email, password });
     } catch (error) {
       // Error handling is done in the useAuth hook
     }
@@ -42,15 +43,28 @@ export const LoginForm = () => {
               <span className="text-2xl font-bold text-white">R</span>
             </motion.div>
             <div>
-              <CardTitle className="text-2xl font-bold">Romdol Admin</CardTitle>
+              <CardTitle className="text-2xl font-bold">Join Romdol</CardTitle>
               <CardDescription className="text-muted-foreground">
-                Sign in to your restaurant dashboard
+                Create your restaurant admin account
               </CardDescription>
             </div>
           </CardHeader>
           
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Enter your username"
+                  required
+                  className="transition-smooth focus:ring-primary"
+                />
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -74,6 +88,7 @@ export const LoginForm = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter your password"
                     required
+                    minLength={6}
                     className="pr-10 transition-smooth focus:ring-primary"
                   />
                   <Button
@@ -104,27 +119,19 @@ export const LoginForm = () => {
                     className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
                   />
                 ) : (
-                  'Sign In'
+                  'Create Account'
                 )}
               </Button>
             </form>
             
-            <div className="mt-6 p-4 bg-muted/50 rounded-lg">
-              <p className="text-xs text-muted-foreground text-center">
-                Demo Credentials:<br />
-                Email: admin@romdol.com<br />
-                Password: admin123
-              </p>
-            </div>
-            
-            <div className="mt-4 text-center">
+            <div className="mt-6 text-center">
               <p className="text-sm text-muted-foreground">
-                Don't have an account?{' '}
+                Already have an account?{' '}
                 <Link 
-                  to="/signup" 
+                  to="/login" 
                   className="text-primary hover:underline font-medium transition-smooth"
                 >
-                  Sign up here
+                  Sign in here
                 </Link>
               </p>
             </div>

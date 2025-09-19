@@ -8,6 +8,7 @@ import { store } from "@/store/store";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { LoginForm } from "@/components/auth/LoginForm";
+import { SignupForm } from "@/components/auth/SignupForm";
 import Dashboard from "./pages/Dashboard";
 import Orders from "./pages/Orders";
 import Inventory from "./pages/Inventory";
@@ -27,6 +28,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<LoginForm />} />
+            <Route path="/signup" element={<SignupForm />} />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route element={
               <ProtectedRoute>
